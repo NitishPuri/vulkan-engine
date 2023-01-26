@@ -13,7 +13,7 @@ namespace lve {
 		~LveWindow();
 
 		LveWindow(const LveWindow&) = delete;
-		void operator=(const LveWindow&) = delete;
+		LveWindow operator=(const LveWindow&) = delete;
 
 		bool shouldClose() { return glfwWindowShouldClose(_window); }
 		VkExtent2D getExtent() { return { static_cast<uint32_t>(_width), static_cast<uint32_t>(_height) }; }
