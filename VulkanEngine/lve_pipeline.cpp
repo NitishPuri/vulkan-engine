@@ -25,6 +25,11 @@ namespace lve {
 		vkDestroyPipeline(_device.device(), _graphicsPipeline, nullptr);
 	}
 
+	void LvePipeline::bind(VkCommandBuffer commandBuffer) {
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
+	}
+
+
 	std::vector<char> LvePipeline::readFile(const std::string& filepath) {
 		std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
@@ -46,9 +51,8 @@ namespace lve {
 		return buffer;
 	}
 
-	PipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
+	PipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height)
 	{
-		PipelineConfigInfo configInfo{};
 
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -63,6 +67,12 @@ namespace lve {
 
 		configInfo.scissor.offset = { 0, 0 };
 		configInfo.scissor.extent = { width, height };
+
+		configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		configInfo.viewportInfo.viewportCount = 1;
+		configInfo.viewportInfo.pViewports = &configInfo.viewport;
+		configInfo.viewportInfo.scissorCount = 1;
+		configInfo.viewportInfo.pScissors = &configInfo.scissor;
 
 		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
@@ -153,14 +163,6 @@ namespace lve {
 		shaderStages[1].pNext = nullptr;
 		shaderStages[1].pSpecializationInfo = nullptr;
 
-		VkPipelineViewportStateCreateInfo viewportInfo{};
-		viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-		viewportInfo.viewportCount = 1;
-		viewportInfo.pViewports = &configInfo.viewport;
-		viewportInfo.scissorCount = 1;
-		viewportInfo.pScissors = &configInfo.scissor;
-
-
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
@@ -174,7 +176,7 @@ namespace lve {
 		pipelineCreateInfo.pStages = shaderStages;
 		pipelineCreateInfo.pVertexInputState = &vertexInputInfo;
 		pipelineCreateInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-		pipelineCreateInfo.pViewportState = &viewportInfo;
+		pipelineCreateInfo.pViewportState = &configInfo.viewportInfo;
 		pipelineCreateInfo.pRasterizationState = &configInfo.rasterizationInfo;
 		pipelineCreateInfo.pMultisampleState = &configInfo.multisampleInfo;
 		pipelineCreateInfo.pDepthStencilState = &configInfo.depthStencilInfo;
