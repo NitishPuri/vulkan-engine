@@ -20,7 +20,7 @@ namespace lve {
 		~FirstApp();
 
 		FirstApp(const FirstApp&) = delete;
-		FirstApp operator=(const FirstApp&) = delete;
+		FirstApp& operator=(const FirstApp&) = delete;
 
 		void run();
 
@@ -29,14 +29,16 @@ namespace lve {
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 
 
 		LveWindow _lveWindow{WIDTH, HEIGHT, "Hello Vulkan!!"};
 		LveDevice _lveDevice{ _lveWindow };
-		LveSwapChain _lveSwapChain{_lveDevice, _lveWindow.getExtent()};
+		std::unique_ptr <LveSwapChain> _lveSwapChain;
 		std::unique_ptr<LvePipeline> _lvePipeline;
-
 		VkPipelineLayout _pipelineLayout;
 		std::vector<VkCommandBuffer> _commandBuffers;
 		std::unique_ptr<LveModel> _lveModel;
