@@ -179,6 +179,7 @@ namespace lve {
 		pipelineCreateInfo.pDepthStencilState = &configInfo.depthStencilInfo;
 		pipelineCreateInfo.pColorBlendState = &configInfo.colorBlendInfo;
 		pipelineCreateInfo.pDynamicState = &configInfo.dynamicStateCreateInfo;
+		//pipelineCreateInfo.pu
 
 		pipelineCreateInfo.layout = configInfo.pipelineLayout;
 		pipelineCreateInfo.renderPass = configInfo.renderPass;
@@ -199,7 +200,7 @@ namespace lve {
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
+		
 		if (vkCreateShaderModule(_device.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create shader module.");
 		}
