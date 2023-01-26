@@ -13,9 +13,11 @@ namespace lve {
 		~LveWindow();
 
 		LveWindow(const LveWindow&) = delete;
-		LveWindow& operator=(const LveWindow&) = delete;
+		void operator=(const LveWindow&) = delete;
 
 		bool shouldClose() { return glfwWindowShouldClose(_window); }
+
+		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 	private:
 		void initWindow();
