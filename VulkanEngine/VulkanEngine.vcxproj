@@ -148,11 +148,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_app.cpp" />
+    <ClCompile Include="lve_pipeline.cpp" />
     <ClCompile Include="lve_window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_app.h" />
+    <ClInclude Include="lve_pipeline.h" />
     <ClInclude Include="lve_window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
