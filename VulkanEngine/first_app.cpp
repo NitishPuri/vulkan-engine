@@ -21,6 +21,9 @@ namespace lve{
 	void FirstApp::run() {
 		SimpleRenderSystem simpleRenderSystem{ _lveDevice, lveRenderer.getSwapchainRenderpass() };
         LveCamera camera{};
+        camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
+        //camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0., 2.5f));
+
 		while (!_lveWindow.shouldClose()) {
 			glfwPollEvents();
             
