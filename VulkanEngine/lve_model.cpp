@@ -1,15 +1,21 @@
 #include "lve_model.h"
 
 namespace lve {
-	LveModel::LveModel(LveDevice& device, const std::vector<Vertex>& vertices) 
+	LveModel::LveModel(LveDevice& device, const Builder& builder) 
 		: _lveDevice{ device }
 	{
-		createVertexBuffers(vertices);
+		createVertexBuffers(builder.vertices);
+		createIndexBuffers(builder.indices);
 	}
 
 	LveModel::~LveModel() {
 		vkDestroyBuffer(_lveDevice.device(), _vertexBuffer, nullptr);
 		vkFreeMemory(_lveDevice.device(), _vertexBufferMemory, nullptr);
+
+		if (hasIndexBuffer) {
+			vkDestroyBuffer(_lveDevice.device(), _indexBuffer, nullptr);
+			vkFreeMemory(_lveDevice.device(), _indexBufferMemory, nullptr);
+		}
 	}
 
 	void LveModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
@@ -30,14 +36,43 @@ namespace lve {
 		vkUnmapMemory(_lveDevice.device(), _vertexBufferMemory);
 	}
 
+	void LveModel::createIndexBuffers(const std::vector<uint32_t>& indices) {
+		_indexCount = static_cast<uint32_t>(indices.size());
+		hasIndexBuffer = (_indexCount > 0);
+		if (!hasIndexBuffer) {
+			return;
+		}
+
+		VkDeviceSize bufferSize = sizeof(indices[0]) * _indexCount;
+
+		_lveDevice.createBuffer(bufferSize,
+			VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			_indexBuffer, _indexBufferMemory);
+
+		void* data;
+		vkMapMemory(_lveDevice.device(), _indexBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, indices.data(), bufferSize);
+		vkUnmapMemory(_lveDevice.device(), _indexBufferMemory);
+	}
+
+
 	void LveModel::bind(VkCommandBuffer commandBuffer) {
 		VkBuffer buffers[] = { _vertexBuffer };
 		VkDeviceSize offsets[] = {0};
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
+		if (hasIndexBuffer) {
+			vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		}
 	}
 
 	void LveModel::draw(VkCommandBuffer commandBuffer) {
-		vkCmdDraw(commandBuffer, _vertexCount, 1, 0, 0);
+		if (hasIndexBuffer) {
+			vkCmdDrawIndexed(commandBuffer, _indexCount, 1, 0, 0, 0);
+		}
+		else {
+			vkCmdDraw(commandBuffer, _vertexCount, 1, 0, 0);
+		}
 	}
 
 	std::vector<VkVertexInputBindingDescription> LveModel::Vertex::getBindingDescriptions() {
