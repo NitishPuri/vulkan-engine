@@ -19,7 +19,7 @@ namespace lve {
 		VkExtent2D getExtent() { return { static_cast<uint32_t>(_width), static_cast<uint32_t>(_height) }; }
 		bool wasWindowResized() { return _framebufferResized; }
 		void resetWindowResizedFlag() { _framebufferResized = false; }
-
+		GLFWwindow* getGLFWWindow() const { return _window; }
 
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
