@@ -6,8 +6,11 @@
 #include <fstream>
 #include <stdexcept>
 #include <iostream>
-
 #include <filesystem>
+
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
 
 namespace lve {
 
@@ -33,14 +36,15 @@ namespace lve {
 
 
 	std::vector<char> LvePipeline::readFile(const std::string& filepath) {
-		std::ifstream file(filepath, std::ios::ate | std::ios::binary);
-
-		if (!std::filesystem::exists(filepath)) {
-			throw std::runtime_error("File not found: " + filepath);
+		std::string enginePath = ENGINE_DIR + filepath;
+		if (!std::filesystem::exists(enginePath)) {
+			throw std::runtime_error("File not found: " + enginePath);
 		}
 
+		std::ifstream file(enginePath, std::ios::ate | std::ios::binary);
+
 		if (!file.is_open()) {
-			throw std::runtime_error("failed to open file: " + filepath);
+			throw std::runtime_error("failed to open file: " + enginePath);
 		}
 
 		size_t fileSize = static_cast<size_t>(file.tellg());
