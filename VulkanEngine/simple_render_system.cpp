@@ -64,7 +64,7 @@ namespace lve {
 			"shaders/vert.spv", "shaders/frag.spv", pipelineConfig);
 	}
 
-	void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo,std::vector<LveGameObject>& gameObjects) 
+	void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) 
 	{
 		_lvePipeline->bind(frameInfo.commandBuffer);
 
@@ -74,17 +74,19 @@ namespace lve {
 			0, 1, &frameInfo.globalDescriptorSet,
 			0, nullptr);
 
-		for (auto& object : gameObjects) {
+		for (auto& kv : frameInfo.gameObjects) {
+			auto& obj = kv.second;
+			if (obj.model == nullptr) continue;
 			SimplePushConstantData push{};
-			push.modelMatrix = object.transform.mat4();
-			push.normalMatrix = object.transform.normalMatrix();
+			push.modelMatrix = obj.transform.mat4();
+			push.normalMatrix = obj.transform.normalMatrix();
 
 			vkCmdPushConstants(frameInfo.commandBuffer,
 				_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0, sizeof(SimplePushConstantData), &push);
 
-			object.model->bind(frameInfo.commandBuffer);
-			object.model->draw(frameInfo.commandBuffer);
+			obj.model->bind(frameInfo.commandBuffer);
+			obj.model->draw(frameInfo.commandBuffer);
 		}
 	}
 }
