@@ -95,5 +95,8 @@
     <ClInclude Include="lve_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lve_frame_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
