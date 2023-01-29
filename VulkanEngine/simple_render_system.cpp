@@ -61,7 +61,7 @@ namespace lve {
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = _pipelineLayout;
 		_lvePipeline = std::make_unique<LvePipeline>(_lveDevice,
-			"shaders/vert.spv", "shaders/frag.spv", pipelineConfig);
+			"shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
 	}
 
 	void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) 

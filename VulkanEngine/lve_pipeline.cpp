@@ -36,6 +36,7 @@ namespace lve {
 		std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
 		if (!std::filesystem::exists(filepath)) {
+			std::cout << "Current Path : " << std::filesystem::current_path() << std::endl;
 			throw std::runtime_error("File not found: " + filepath);
 		}
 
