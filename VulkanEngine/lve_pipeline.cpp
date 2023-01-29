@@ -122,6 +122,9 @@ namespace lve {
 		configInfo.dynamicStateCreateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
 		configInfo.dynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
 		configInfo.dynamicStateCreateInfo.flags = 0;
+
+		configInfo.bindingDescription = LveModel::Vertex::getBindingDescriptions();
+		configInfo.attributeDescription = LveModel::Vertex::getAttributeDescriptions();
 	}
 
 	void LvePipeline::createGraphicsPipeline(
@@ -159,8 +162,8 @@ namespace lve {
 		shaderStages[1].pNext = nullptr;
 		shaderStages[1].pSpecializationInfo = nullptr;
 
-		auto bindingDescriptions = LveModel::Vertex::getBindingDescriptions();
-		auto attributeDescriptions = LveModel::Vertex::getAttributeDescriptions();
+		auto& bindingDescriptions = configInfo.bindingDescription;
+		auto& attributeDescriptions = configInfo.attributeDescription;
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
