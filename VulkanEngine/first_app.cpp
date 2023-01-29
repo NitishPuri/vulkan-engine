@@ -90,7 +90,7 @@ namespace lve{
 				ubo.projectionMatrix = camera.getProjection();
 				ubo.viewMatrix = camera.getView();
 				pointLightSystem.update(frameInfo, ubo);
-				uboBuffers[frameIndex]->writeToIndex(&ubo, frameIndex);
+				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
 				// render
