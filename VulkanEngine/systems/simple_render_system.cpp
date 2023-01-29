@@ -37,7 +37,6 @@ namespace lve {
 
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{globalSetLayout};
 
-
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
